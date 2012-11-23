@@ -12,7 +12,7 @@ def main():
 
     parser = argparse.ArgumentParser(
         description='Usage: %prog [value] [size]',
-        epiloge='Converts file size into equivilents.')
+        epilog='Converts file size into equivilents.')
     parser.add_argument(
         'integer', metavar='INT', type=float,
         help='value in b, kb, mb, gb or tb')
