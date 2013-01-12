@@ -1,64 +1,81 @@
-#/usr/bin/env python
-#Date: 11/23/2012
-#Author: Sam Chapler
-#Name: conv.py
-
+#!/usr/bin/env python
+"""
+ Date: 11/23/2012
+ Author: Sam Chapler
+ Name: conv.py
+"""
 
 import argparse
-import string
+from prettytable import PrettyTable
 
 
-def main():
-
+def getargs():
+    """Converts bytes to other shit."""
     parser = argparse.ArgumentParser(
-        description='Usage: %prog [value] [size]',
-        epilog='Converts file size into equivilents.')
+        description='Converts bytes to other shit.')
     parser.add_argument(
         'integer', metavar='INT', type=float,
-        help='value in b, kb, mb, gb or tb')
+        help='Integer value to convert')
     parser.add_argument(
-        'size', metavar='SIZE', type=str, help='indicate the size',
-        choices='b, k, m, g, t')
+        'unit', metavar='b|k|m|g|t', type=str, help='unit of the integer',
+        choices='bkmgt')
 
     args = parser.parse_args()
     num = args.integer + 0.0
 
     vals = []
-    sizes = ['Bytes:', 'Kilobytes:', 'Megabytes:', 'Gigabytes:', 'Terabytes:']
-    if args.size == 'b':
+    units = [
+            'Bytes',
+            'Kilobytes',
+            'Megabytes',
+            'Gigabytes',
+            'Terabytes']
+
+    if args.unit == 'b':
         vals.append(num)
         vals.append(num / 1024)
         vals.append(num / 1024 / 1024)
         vals.append(num / 1024 / 1024 / 1024)
         vals.append(num / 1024 / 1024 / 1024 / 1024)
-    elif args.size == 'k':
+    elif args.unit == 'k':
         vals.append(num * 1024)
         vals.append(num)
         vals.append(num / 1024)
         vals.append(num / 1024 / 1024)
         vals.append(num / 1024 / 1024 / 1024)
-    elif args.size == 'm':
+    elif args.unit == 'm':
         vals.append(num * 1024)
         vals.append(num * 1024 * 1024)
         vals.append(num)
         vals.append(num / 1024)
         vals.append(num / 1024 / 1024)
-    elif args.size == 'g':
+    elif args.unit == 'g':
         vals.append(num * 1024 * 1024 * 1024)
         vals.append(num * 1024 * 1024)
         vals.append(num * 1024)
         vals.append(num)
         vals.append(num / 1024)
-    elif args.size == 't':
+    elif args.unit == 't':
         vals.append(num * 1024 * 1024 * 1024 * 1024)
         vals.append(num * 1024 * 1024 * 1024)
         vals.append(num * 1024 * 1024)
         vals.append(num * 1024)
         vals.append(num)
 
-    for s, n in zip(sizes, vals):
-        print string.rjust(s, 10), string.rjust(str(n), 2)
+    results = zip(units, vals)
+    return results
 
+def conv(results):
+    """Build the conversion table"""
+    table = PrettyTable()
+    table.field_names = ['Units', 'Size']
+    table.align = 'l'
+    table.padding_width = 1
+
+    for unit, size in results:
+        table.add_row([unit, size])
+    print table
 
 if __name__ == '__main__':
-    main()
+    RESULT_LIST = getargs()
+    conv(RESULT_LIST)
